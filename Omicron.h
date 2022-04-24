@@ -14,15 +14,20 @@ public:
     SARS_COV2_ptr *ancestor;
 
     Omicron(char *string_val, char t, int d) : ancestor(new SARS_COV2_ptr(string_val, t, d)) {
-        this->current_string = string_val;
+        this->current_string = new char[d];
+        strcpy(current_string, string_val);
         this->type = t;
         this->dimensions = d;
-        this->p = 2 / d;
+        this->p = 2/(double)d;
     }
 
-    Omicron(const SARS_COV2 &rhs, char *string_val) : ancestor(rhs.ancestor) {
+    Omicron(Omicron *rhs, char *string_val) : ancestor(rhs->ancestor) {
         ++ancestor->refCounter;
-        this->current_string = string_val;
+        this->current_string = new char[rhs->dimensions];
+        strcpy(current_string, string_val);
+        this->dimensions = rhs->dimensions;
+        this->type = rhs->type;
+        this->p = 2/(double )dimensions;
     }
 
     void change_chars() override {
@@ -33,14 +38,26 @@ public:
                 switch (current_string[i]) {
                     case 'T':
                         current_string[i] = 'A';
+                        break;
                     case 'C':
                         current_string[i] = 'G';
+                        break;
                     case 'G':
                         current_string[i] = 'C';
-
+                        break;
                 }
             }
         }
+    }
+    SARS_COV2_ptr* get_anc(){
+        return this->ancestor;
+    }
+
+    ~Omicron(){
+        if(--ancestor->refCounter == -1){
+            delete ancestor;
+        }
+        delete[] current_string;
     }
 
 };

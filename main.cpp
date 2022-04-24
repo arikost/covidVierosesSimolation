@@ -19,9 +19,7 @@ int main(int argc, char** argv){
         cerr<<"failed to open file: " << argv[2]<<endl;
     }
     Simulation sim(config, first_gen);
-    srand( (unsigned)time( NULL ) );
-    double t = (double) rand()/RAND_MAX;
-    cout << t << endl;
+    sim.run();
     return 0;
 }
 

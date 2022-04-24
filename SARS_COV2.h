@@ -12,13 +12,14 @@ using namespace std;
 
 class SARS_COV2 {
 public:
-
+    double sim_to_target;
     char* current_string;
     char type;
-    static int dimensions;
+    int dimensions;
     struct SARS_COV2_ptr{
         int refCounter;
         char* initString;
+
         char type_o ;
         SARS_COV2_ptr(char* val, char t, int d): refCounter(0){
             initString = new char[d];
@@ -32,22 +33,22 @@ public:
     };
     SARS_COV2_ptr *ancestor;
 
-    int h(SARS_COV2 &a, SARS_COV2 &t){
-        int i, k = 0;
+    void calc_sim_to_target(const char* target){
+        int i;
+        double k = 0;
         for(i = 0; i < dimensions; i++){
-            if( a.current_string[i] == t.current_string[i]){
+            if( current_string[i] == target[i]){
                 k++;
             }
         }
-        return k;
+        sim_to_target = k/dimensions;
     }
+    bool operator>(const SARS_COV2 &rhs) const{
+        return sim_to_target > rhs.sim_to_target;
+    }
+    virtual SARS_COV2_ptr* get_anc() = 0;
     virtual void change_chars() = 0;
-    ~SARS_COV2() {
-        if(--ancestor->refCounter == -1){
-            delete ancestor;
-        }
-    };
-
+    virtual ~SARS_COV2() {};
 };
 
 
